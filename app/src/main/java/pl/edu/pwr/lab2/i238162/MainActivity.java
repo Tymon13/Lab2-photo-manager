@@ -1,8 +1,8 @@
 package pl.edu.pwr.lab2.i238162;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onFabClick(View v) {
-        Toast.makeText(this, "Not implemented, heh", Toast.LENGTH_LONG).show();
+        Intent myIntent = new Intent(this, ImageCapture.class);
+        startActivity(myIntent);
     }
 }
