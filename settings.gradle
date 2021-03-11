@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "MultimediaManager"
+rootProject.name = "Multimedia Manager"
