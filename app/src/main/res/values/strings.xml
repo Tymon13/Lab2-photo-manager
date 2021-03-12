@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Multimedia Manager</string>
-    <string name="addImageFabContentDescription">Add multimedia</string>
+    <string name="add_image_fab_description">Add multimedia</string>
+    <string name="take_a_picture_fab_description">Take a picture</string>
 </resources>

@@ -13,7 +13,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:clickable="true"
-        android:contentDescription="@string/addImageFabContentDescription"
+        android:contentDescription="@string/add_image_fab_description"
         android:onClick="onFabClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

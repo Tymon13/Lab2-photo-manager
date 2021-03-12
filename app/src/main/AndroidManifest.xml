@@ -15,7 +15,6 @@
         <activity
             android:name=".ImageCapture"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_image_capture"
             android:theme="@style/Theme.MultimediaManager.Fullscreen" />
         <activity android:name=".MainActivity">
             <intent-filter>
