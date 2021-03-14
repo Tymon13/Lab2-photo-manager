@@ -51,8 +51,8 @@ public class ImageCaptureActivity extends AppCompatActivity {
                 startPreview();
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Camera permissions are required for adding new photos/videos")
-                       .setPositiveButton("Ok", null)
+                builder.setMessage(R.string.camera_permission_needed_dialog)
+                       .setPositiveButton(R.string.alert_button_ok, null)
                        .setOnDismissListener(dialog -> ImageCaptureActivity.this.finish());
                 builder.create()
                        .show();
@@ -63,16 +63,16 @@ public class ImageCaptureActivity extends AppCompatActivity {
     public void onTakePictureFabClick(View v) {
         DateTimeFormatter timeStampPattern = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         String timestamp = timeStampPattern.format(java.time.LocalDateTime.now());
-        String filename = "IMG_" + timestamp + ".jpg";
-        ImageCapture.OutputFileOptions outputFileOptions =
-                new ImageCapture.OutputFileOptions.Builder(new File(this.getFilesDir(), filename)).build();
+        String filename = getString(R.string.image_filename, timestamp);
+        ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions.Builder(
+                new File(this.getFilesDir(), filename)).build();
         Executor cameraExecutor = Executors.newSingleThreadExecutor();
 
         imageCapture.takePicture(outputFileOptions, cameraExecutor, new ImageCapture.OnImageSavedCallback() {
             @Override
             public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                 ImageCaptureActivity.this.runOnUiThread(
-                        () -> Toast.makeText(ImageCaptureActivity.this, "Image saved as " + filename,
+                        () -> Toast.makeText(ImageCaptureActivity.this, getString(R.string.image_saved_text, filename),
                                              Toast.LENGTH_SHORT)
                                    .show());
                 ImageCaptureActivity.this.finish();
@@ -80,12 +80,11 @@ public class ImageCaptureActivity extends AppCompatActivity {
 
             @Override
             public void onError(@NonNull ImageCaptureException error) {
-                ImageCaptureActivity.this.runOnUiThread(
-                        () -> new AlertDialog.Builder(ImageCaptureActivity.this).setMessage("Failed to save image!")
-                                                                                .setPositiveButton("Ok", null)
-                                                                                .setOnDismissListener(
-                                                                                        dialog -> ImageCaptureActivity.this.finish())
-                                                                                .show());
+                ImageCaptureActivity.this.runOnUiThread(() -> new AlertDialog.Builder(
+                        ImageCaptureActivity.this).setMessage(R.string.image_save_fail_alert)
+                                                  .setPositiveButton(R.string.alert_button_ok, null)
+                                                  .setOnDismissListener(dialog -> ImageCaptureActivity.this.finish())
+                                                  .show());
             }
         });
     }
