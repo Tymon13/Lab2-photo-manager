@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onFabClick(View v) {
-        Intent myIntent = new Intent(this, ImageCapture.class);
+        Intent myIntent = new Intent(this, ImageCaptureActivity.class);
         startActivity(myIntent);
     }
 }

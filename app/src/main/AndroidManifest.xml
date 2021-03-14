@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MultimediaManager">
         <activity
-            android:name=".ImageCapture"
+            android:name=".ImageCaptureActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/Theme.MultimediaManager.Fullscreen" />
         <activity android:name=".MainActivity">
