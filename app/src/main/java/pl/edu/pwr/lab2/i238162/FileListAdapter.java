@@ -74,9 +74,9 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         viewHolder.getFilenameView()
                   .setText(fileList[position].getName());
         ImageView previewView = viewHolder.getPreviewView();
+        int imageDimension = viewHolder.getPreviewViewDimension();
         previewView.setImageBitmap(
-                decodeSampledBitmapFromResource(fileList[position].getPath(), previewView.getMaxWidth(),
-                                                previewView.getMaxHeight()));
+                decodeSampledBitmapFromResource(fileList[position].getPath(), imageDimension, imageDimension));
     }
 
     @Override
@@ -87,12 +87,15 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView filenameView;
         private final ImageView previewImageView;
+        private final int previewDimension;
 
         public ViewHolder(View view) {
             super(view);
 
             filenameView = view.findViewById(R.id.filenameView);
             previewImageView = view.findViewById(R.id.filePreviewImage);
+            previewDimension = (int) view.getResources()
+                                         .getDimension(R.dimen.file_list_image_preview_size);
         }
 
         public TextView getFilenameView() {
@@ -101,6 +104,10 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
         public ImageView getPreviewView() {
             return previewImageView;
+        }
+
+        public int getPreviewViewDimension() {
+            return previewDimension;
         }
     }
 
