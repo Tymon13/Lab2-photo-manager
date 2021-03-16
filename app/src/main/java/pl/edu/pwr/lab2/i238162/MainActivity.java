@@ -14,7 +14,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startRecyclerView();
+    }
+
+    private void startRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.fileListRecyclerView);
         recyclerView.setAdapter(new FileListAdapter(this));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
