@@ -12,15 +12,55 @@
         android:id="@+id/filePreviewImage"
         android:layout_width="@dimen/file_list_image_preview_size"
         android:layout_height="@dimen/file_list_image_preview_size"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/file_row_image_desciption"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/file_row_image_desciption" />
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
     <TextView
         android:id="@+id/filenameView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ellipsize="middle"
+        android:gravity="center_horizontal"
+        android:singleLine="false"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintEnd_toStartOf="@+id/favouriteIconView"
+        app:layout_constraintStart_toEndOf="@+id/filePreviewImage"
+        app:layout_constraintTop_toTopOf="@+id/filePreviewImage"
+        tools:text="@tools:sample/full_names" />
+
+    <TextView
+        android:id="@+id/creationDateView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/filePreviewImage"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/filePreviewImage"
+        app:layout_constraintEnd_toStartOf="@+id/multimediaTypeIconView"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toEndOf="@+id/filePreviewImage"
+        tools:text="@tools:sample/date/ddmmyy" />
+
+    <ImageView
+        android:id="@+id/favouriteIconView"
+        android:layout_width="@dimen/file_list_icon_size"
+        android:layout_height="@dimen/file_list_icon_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/filePreviewImage"
+        app:srcCompat="@drawable/ic_baseline_star_border_24"
+        android:contentDescription="@string/favourite_icon_description" />
+
+    <ImageView
+        android:id="@+id/multimediaTypeIconView"
+        android:layout_width="@dimen/file_list_icon_size"
+        android:layout_height="@dimen/file_list_icon_size"
+        android:contentDescription="@string/resource_type_icon_description"
+        app:layout_constraintBottom_toBottomOf="@+id/filePreviewImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/favouriteIconView"
+        app:srcCompat="@drawable/ic_baseline_photo_24" />
 </androidx.constraintlayout.widget.ConstraintLayout>

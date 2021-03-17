@@ -8,4 +8,6 @@
     <string name="image_filename">IMG_%1$s.jpg</string>
     <string name="camera_permission_needed_dialog">Camera permissions are required for adding new photos/videos</string>
     <string name="file_row_image_desciption">Media preview</string>
+    <string name="resource_type_icon_description">Multimedia type</string>
+    <string name="favourite_icon_description">Favourite</string>
 </resources>

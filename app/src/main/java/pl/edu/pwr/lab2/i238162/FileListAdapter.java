@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHolder> {
     private final File[] fileList;
@@ -58,6 +60,17 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         return BitmapFactory.decodeFile(filename, options);
     }
 
+    private static String getCreationDate(File file) {
+        try {
+            BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+            //there's probably a better method to do that, but I don't know it
+            String creationDate = "" + attr.creationTime();
+            creationDate = creationDate.replace('T', ' ');
+            return creationDate.substring(0, creationDate.length() - 1);
+        } catch (Exception e) {
+            return "?";
+        }
+    }
 
     @NonNull
     @Override
@@ -73,6 +86,9 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         viewHolder.getFilenameView()
                   .setText(fileList[position].getName());
+        viewHolder.getCreationDateView()
+                  .setText(getCreationDate(fileList[position]));
+
         ImageView previewView = viewHolder.getPreviewView();
         int imageDimension = viewHolder.getPreviewViewDimension();
         previewView.setImageBitmap(
@@ -85,9 +101,10 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView filenameView;
         private final ImageView previewImageView;
         private final int previewDimension;
+        private final TextView filenameView;
+        private final TextView creationDateView;
 
         public ViewHolder(View view) {
             super(view);
@@ -96,6 +113,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
             previewImageView = view.findViewById(R.id.filePreviewImage);
             previewDimension = (int) view.getResources()
                                          .getDimension(R.dimen.file_list_image_preview_size);
+            creationDateView = view.findViewById(R.id.creationDateView);
         }
 
         public TextView getFilenameView() {
@@ -108,6 +126,10 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
         public int getPreviewViewDimension() {
             return previewDimension;
+        }
+
+        public TextView getCreationDateView() {
+            return creationDateView;
         }
     }
 
