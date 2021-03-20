@@ -3,6 +3,8 @@ package pl.edu.pwr.lab2.i238162;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +17,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Objects;
 
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHolder> {
-    private final File[] fileList;
+    private final ArrayList<File> fileList;
+    private final Handler handler = new Handler();
+    private HashMap<String, Runnable> pendingFileRemoves = new HashMap<String, Runnable>();
 
     public FileListAdapter(Context c) {
-        fileList = c.getFilesDir()
-                    .listFiles();
+        fileList = new ArrayList<>(Arrays.asList(Objects.requireNonNull(c.getFilesDir()
+                                                                         .listFiles())));
     }
 
     private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -72,6 +80,32 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         }
     }
 
+    public String startRemoveFileTimer(int position, int timeoutInMs) {
+        File fileToRemove = fileList.remove(position);
+        String filename = fileToRemove.getPath();
+        Log.i(this.getClass()
+                  .getName(), "Adding task to remove " + filename + " after " + timeoutInMs + "ms");
+        Runnable remover = () -> {
+            Log.i(this.getClass()
+                      .getName(), "Removing " + filename + " now.");
+            pendingFileRemoves.remove(filename);
+            fileToRemove.delete();
+        };
+        pendingFileRemoves.put(filename, remover);
+        handler.postDelayed(remover, timeoutInMs);
+        this.notifyItemRemoved(position);
+        return filename;
+    }
+
+    public void cancelRemoveFileTimer(String filename, int position) {
+        Runnable remover = pendingFileRemoves.remove(filename);
+        handler.removeCallbacks(remover);
+        Log.i(this.getClass()
+                  .getName(), "Stopping task to remove " + filename + ".");
+        fileList.add(position, new File(filename));
+        this.notifyItemInserted(position);
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
@@ -85,19 +119,21 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         viewHolder.getFilenameView()
-                  .setText(fileList[position].getName());
+                  .setText(fileList.get(position)
+                                   .getName());
         viewHolder.getCreationDateView()
-                  .setText(getCreationDate(fileList[position]));
+                  .setText(getCreationDate(fileList.get(position)));
 
         ImageView previewView = viewHolder.getPreviewView();
         int imageDimension = viewHolder.getPreviewViewDimension();
         previewView.setImageBitmap(
-                decodeSampledBitmapFromResource(fileList[position].getPath(), imageDimension, imageDimension));
+                decodeSampledBitmapFromResource(fileList.get(position)
+                                                        .getPath(), imageDimension, imageDimension));
     }
 
     @Override
     public int getItemCount() {
-        return fileList.length;
+        return fileList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

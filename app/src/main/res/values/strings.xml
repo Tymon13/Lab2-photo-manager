@@ -10,4 +10,6 @@
     <string name="file_row_image_desciption">Media preview</string>
     <string name="resource_type_icon_description">Multimedia type</string>
     <string name="favourite_icon_description">Favourite</string>
+    <string name="remove_file_notification">%1$s removed.</string>
+    <string name="undo_button">UNDO</string>
 </resources>
