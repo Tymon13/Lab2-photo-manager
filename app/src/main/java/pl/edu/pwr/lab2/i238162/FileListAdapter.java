@@ -18,18 +18,21 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHolder> {
     private final ArrayList<File> fileList;
     private final Handler handler = new Handler();
-    private HashMap<String, Runnable> pendingFileRemoves = new HashMap<String, Runnable>();
+    private final HashMap<String, Runnable> pendingFileRemoves = new HashMap<>();
 
     public FileListAdapter(Context c) {
-        fileList = new ArrayList<>(Arrays.asList(Objects.requireNonNull(c.getFilesDir()
-                                                                         .listFiles())));
+        fileList = new ArrayList<>();
+        File[] files = c.getFilesDir()
+                        .listFiles();
+        if (files != null) {
+            Collections.addAll(fileList, files);
+        }
     }
 
     private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -89,7 +92,10 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
             Log.i(this.getClass()
                       .getName(), "Removing " + filename + " now.");
             pendingFileRemoves.remove(filename);
-            fileToRemove.delete();
+            if (!fileToRemove.delete()) {
+                Log.e(this.getClass()
+                          .getName(), "Removing " + filename + " failed.");
+            }
         };
         pendingFileRemoves.put(filename, remover);
         handler.postDelayed(remover, timeoutInMs);
@@ -126,9 +132,8 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
         ImageView previewView = viewHolder.getPreviewView();
         int imageDimension = viewHolder.getPreviewViewDimension();
-        previewView.setImageBitmap(
-                decodeSampledBitmapFromResource(fileList.get(position)
-                                                        .getPath(), imageDimension, imageDimension));
+        previewView.setImageBitmap(decodeSampledBitmapFromResource(fileList.get(position)
+                                                                           .getPath(), imageDimension, imageDimension));
     }
 
     @Override
