@@ -12,6 +12,8 @@
     <string name="favourite_icon_description">Favourite</string>
     <string name="remove_file_notification">%1$s removed.</string>
     <string name="undo_button">UNDO</string>
+    <string name="favourites_removed">Removed from favourites</string>
+    <string name="favourites_added">Added to favourites</string>
 
     <string name="photos_directory">Photos</string>
 </resources>
