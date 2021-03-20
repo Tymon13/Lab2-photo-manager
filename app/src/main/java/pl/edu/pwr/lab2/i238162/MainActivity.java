@@ -3,6 +3,7 @@ package pl.edu.pwr.lab2.i238162;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             int position = viewHolder.getAdapterPosition();
             String filePath = adapter.startRemoveFileTimer(position, fileRemoveUndoTimeout);
-            String filename = filePath.substring(filePath.lastIndexOf(File.separatorChar));
+            String filename = filePath.substring(filePath.lastIndexOf(File.separatorChar) + 1);
             Snackbar.make(findViewById(R.id.MainLayout), getString(R.string.remove_file_notification, filename),
                           fileRemoveUndoTimeout)
                     .setAction(R.string.undo_button, v -> adapter.cancelRemoveFileTimer(filePath, position))
@@ -44,6 +45,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        createMediaDirectories();
+    }
+
+    private void createMediaDirectories() {
+        File photosDirectory = new File(getFilesDir(), getString(R.string.photos_directory));
+        if (!photosDirectory.exists()) {
+            if (photosDirectory.mkdirs()) {
+                Log.i(this.getLocalClassName(), "Created " + photosDirectory + " directory.");
+            } else {
+                Log.e(this.getLocalClassName(), "Failed to create " + photosDirectory);
+            }
+        }
     }
 
     @Override

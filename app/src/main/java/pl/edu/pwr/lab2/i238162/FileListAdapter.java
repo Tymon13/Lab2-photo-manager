@@ -28,10 +28,10 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
     public FileListAdapter(Context c) {
         fileList = new ArrayList<>();
-        File[] files = c.getFilesDir()
-                        .listFiles();
-        if (files != null) {
-            Collections.addAll(fileList, files);
+        File photosDir = new File(c.getFilesDir(), c.getString(R.string.photos_directory));
+        File[] photos = photosDir.listFiles();
+        if (photos != null) {
+            Collections.addAll(fileList, photos);
         }
     }
 

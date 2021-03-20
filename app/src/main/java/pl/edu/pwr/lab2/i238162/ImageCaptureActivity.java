@@ -64,8 +64,9 @@ public class ImageCaptureActivity extends AppCompatActivity {
         DateTimeFormatter timeStampPattern = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         String timestamp = timeStampPattern.format(java.time.LocalDateTime.now());
         String filename = getString(R.string.image_filename, timestamp);
+        File baseDirectory = new File(getFilesDir(), getString(R.string.photos_directory));
         ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions.Builder(
-                new File(this.getFilesDir(), filename)).build();
+                new File(baseDirectory, filename)).build();
         Executor cameraExecutor = Executors.newSingleThreadExecutor();
 
         imageCapture.takePicture(outputFileOptions, cameraExecutor, new ImageCapture.OnImageSavedCallback() {
