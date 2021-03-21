@@ -22,4 +22,9 @@
     <string name="sort_by_date_ascending_text">Sort by date ascending</string>
     <string name="sort_by_date_descending_text">Sort by date descending</string>
     <string name="sort_mode_preferences_key">SORT_MODE</string>
+
+    <string name="crop_button_text">Crop</string>
+    <string name="black_white_button_text">B/W</string>
+    <string name="sepia_button_text">Sepia</string>
+    <string name="save_button_text">Save</string>
 </resources>

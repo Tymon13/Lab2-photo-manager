@@ -1,6 +1,7 @@
 package pl.edu.pwr.lab2.i238162;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
@@ -65,17 +66,18 @@ public class ImageCaptureActivity extends AppCompatActivity {
         String timestamp = timeStampPattern.format(java.time.LocalDateTime.now());
         String filename = getString(R.string.image_filename, timestamp);
         File baseDirectory = new File(getFilesDir(), getString(R.string.photos_directory));
+        File outputFile = new File(baseDirectory, filename);
         ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions.Builder(
-                new File(baseDirectory, filename)).build();
+                outputFile).build();
         Executor cameraExecutor = Executors.newSingleThreadExecutor();
 
         imageCapture.takePicture(outputFileOptions, cameraExecutor, new ImageCapture.OnImageSavedCallback() {
             @Override
             public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                ImageCaptureActivity.this.runOnUiThread(
-                        () -> Toast.makeText(ImageCaptureActivity.this, getString(R.string.image_saved_text, filename),
-                                             Toast.LENGTH_SHORT)
-                                   .show());
+                Intent intent = new Intent(ImageCaptureActivity.this, ImageModificationsApplier.class);
+                intent.putExtra("filePath", outputFile.getPath());
+                startActivity(intent);
+
                 ImageCaptureActivity.this.finish();
             }
 

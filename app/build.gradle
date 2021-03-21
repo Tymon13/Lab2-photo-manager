@@ -43,4 +43,6 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:1.1.0-alpha02"
     // CameraX View class
     implementation "androidx.camera:camera-view:1.0.0-alpha22"
+
+    api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 }
