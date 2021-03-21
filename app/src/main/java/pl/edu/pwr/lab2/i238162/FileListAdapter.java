@@ -35,7 +35,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     private final File favouritesFile;
     private final List<String> favourites;
 
-    public FileListAdapter(Context c) {
+    public FileListAdapter(Context c, int sortMode) {
         parentContext = c;
         favouritesFile = new File(parentContext.getFilesDir(), "favourites.txt");
         favourites = readFavourites();
@@ -46,6 +46,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         if (photos != null) {
             Collections.addAll(fileList, photos);
         }
+        sortItems(sortMode);
     }
 
     private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {

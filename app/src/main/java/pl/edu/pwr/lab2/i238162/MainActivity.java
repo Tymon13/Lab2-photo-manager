@@ -90,12 +90,16 @@ public class MainActivity extends AppCompatActivity {
         int sortMode = item.getItemId();
         adapter.sortItems(sortMode);
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        preferences.edit().putInt(getString(R.string.sort_mode_preferences_key), sortMode).apply();
+        preferences.edit()
+                   .putInt(getString(R.string.sort_mode_preferences_key), sortMode)
+                   .apply();
         return super.onOptionsItemSelected(item);
     }
 
     private void startRecyclerView() {
-        adapter = new FileListAdapter(this);
+        int sortMode = getPreferences(MODE_PRIVATE).getInt(getString(R.string.sort_mode_preferences_key),
+                                                           MENU_SORT_BY_NAMES_ASCENDING);
+        adapter = new FileListAdapter(this, sortMode);
         RecyclerView recyclerView = findViewById(R.id.fileListRecyclerView);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
