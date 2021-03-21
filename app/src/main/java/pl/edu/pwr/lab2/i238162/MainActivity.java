@@ -80,7 +80,13 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.main_menu, menu);
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         int mode = preferences.getInt(getString(R.string.sort_mode_preferences_key), MENU_SORT_BY_NAMES_ASCENDING);
-        onOptionsItemSelected(menu.findItem(mode));
+        MenuItem itemToSelect = menu.findItem(mode);
+        if(itemToSelect != null) {
+            onOptionsItemSelected(itemToSelect);
+        } else {
+            //something went wrong, fix by resetting to default
+            onOptionsItemSelected(menu.findItem(R.id.sort_names_ascending));
+        }
         return true;
     }
 
