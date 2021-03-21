@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -93,6 +94,26 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         } catch (Exception e) {
             return "?";
         }
+    }
+
+    public void sortItems(int itemId) {
+        switch (itemId) {
+            case MainActivity.MENU_SORT_BY_NAMES_ASCENDING:
+                fileList.sort(Comparator.comparing(File::getName));
+                break;
+            case MainActivity.MENU_SORT_BY_NAMES_DESCENDING:
+                fileList.sort(Comparator.comparing(File::getName)
+                                        .reversed());
+                break;
+            case MainActivity.MENU_SORT_BY_DATES_ASCENDING:
+                fileList.sort(Comparator.comparing(FileListAdapter::getCreationDate));
+                break;
+            case MainActivity.MENU_SORT_BY_DATES_DESCENDING:
+                fileList.sort(Comparator.comparing(FileListAdapter::getCreationDate)
+                                        .reversed());
+                break;
+        }
+        notifyDataSetChanged();
     }
 
     private List<String> readFavourites() {

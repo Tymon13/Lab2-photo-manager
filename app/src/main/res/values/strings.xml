@@ -16,4 +16,10 @@
     <string name="favourites_added">Added to favourites</string>
 
     <string name="photos_directory">Photos</string>
+
+    <string name="sort_by_names_ascending_text">Sort by names ascending</string>
+    <string name="sort_by_names_descending_text">Sort by names descending</string>
+    <string name="sort_by_date_ascending_text">Sort by date ascending</string>
+    <string name="sort_by_date_descending_text">Sort by date descending</string>
+    <string name="sort_mode_preferences_key">SORT_MODE</string>
 </resources>

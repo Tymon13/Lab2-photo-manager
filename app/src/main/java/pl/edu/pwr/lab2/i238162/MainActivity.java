@@ -2,8 +2,12 @@ package pl.edu.pwr.lab2.i238162;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -17,6 +21,11 @@ import com.google.android.material.snackbar.Snackbar;
 import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
+    public static final int MENU_SORT_BY_NAMES_ASCENDING = R.id.sort_names_ascending;
+    public static final int MENU_SORT_BY_NAMES_DESCENDING = R.id.sort_names_descending;
+    public static final int MENU_SORT_BY_DATES_ASCENDING = R.id.sort_by_date_ascending;
+    public static final int MENU_SORT_BY_DATES_DESCENDING = R.id.sort_by_date_descending;
+
     private static final int fileRemoveUndoTimeout = 5000;
     private FileListAdapter adapter;
     private final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0,
@@ -63,6 +72,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         startRecyclerView();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        int mode = preferences.getInt(getString(R.string.sort_mode_preferences_key), MENU_SORT_BY_NAMES_ASCENDING);
+        onOptionsItemSelected(menu.findItem(mode));
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        item.setChecked(true);
+        int sortMode = item.getItemId();
+        adapter.sortItems(sortMode);
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        preferences.edit().putInt(getString(R.string.sort_mode_preferences_key), sortMode).apply();
+        return super.onOptionsItemSelected(item);
     }
 
     private void startRecyclerView() {
