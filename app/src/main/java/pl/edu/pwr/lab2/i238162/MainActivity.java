@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         int mode = preferences.getInt(getString(R.string.sort_mode_preferences_key), MENU_SORT_BY_NAMES_ASCENDING);
         MenuItem itemToSelect = menu.findItem(mode);
-        if(itemToSelect != null) {
+        if (itemToSelect != null) {
             onOptionsItemSelected(itemToSelect);
         } else {
             //something went wrong, fix by resetting to default

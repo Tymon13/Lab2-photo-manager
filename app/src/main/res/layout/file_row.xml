@@ -49,10 +49,10 @@
         android:id="@+id/favouriteIconView"
         android:layout_width="@dimen/file_list_icon_size"
         android:layout_height="@dimen/file_list_icon_size"
+        android:contentDescription="@string/favourite_icon_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/filePreviewImage"
-        app:srcCompat="@drawable/ic_baseline_star_border_24"
-        android:contentDescription="@string/favourite_icon_description" />
+        app:srcCompat="@drawable/ic_baseline_star_border_24" />
 
     <ImageView
         android:id="@+id/multimediaTypeIconView"

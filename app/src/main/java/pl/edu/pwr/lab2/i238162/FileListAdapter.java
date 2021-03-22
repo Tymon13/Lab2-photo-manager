@@ -1,6 +1,7 @@
 package pl.edu.pwr.lab2.i238162;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -186,6 +187,8 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         String filename = fileList.get(position)
                                   .getName();
+        String filePath = fileList.get(position)
+                                  .getPath();
         viewHolder.getFilenameView()
                   .setText(filename);
         viewHolder.getCreationDateView()
@@ -193,8 +196,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
         ImageView previewView = viewHolder.getPreviewView();
         int imageDimension = viewHolder.getPreviewViewDimension();
-        previewView.setImageBitmap(decodeSampledBitmapFromResource(fileList.get(position)
-                                                                           .getPath(), imageDimension, imageDimension));
+        previewView.setImageBitmap(decodeSampledBitmapFromResource(filePath, imageDimension, imageDimension));
 
         Drawable icon;
         if (favourites.contains(filename)) {
@@ -206,6 +208,12 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
                   .setImageDrawable(icon);
         viewHolder.getFavouriteButton()
                   .setOnClickListener(v -> toggleItemOnFavouritesList(viewHolder, filename));
+
+        viewHolder.getLayout().setOnClickListener(v -> {
+            Intent intent = new Intent(parentContext, PhotoDetails.class);
+            intent.putExtra("filePath", filePath);
+            parentContext.startActivity(intent);
+        });
     }
 
     private void toggleItemOnFavouritesList(ViewHolder viewHolder, String filename) {
@@ -238,6 +246,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         private final TextView filenameView;
         private final TextView creationDateView;
         private final ImageView favouriteButton;
+        private final View layout;
 
         public ViewHolder(View view) {
             super(view);
@@ -248,6 +257,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
                                          .getDimension(R.dimen.file_list_image_preview_size);
             creationDateView = view.findViewById(R.id.creationDateView);
             favouriteButton = view.findViewById(R.id.favouriteIconView);
+            layout = view;
         }
 
         public TextView getFilenameView() {
@@ -268,6 +278,10 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
         public ImageView getFavouriteButton() {
             return favouriteButton;
+        }
+
+        public View getLayout() {
+            return layout;
         }
     }
 

@@ -45,4 +45,5 @@ dependencies {
     implementation "androidx.camera:camera-view:1.0.0-alpha22"
 
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
 }
