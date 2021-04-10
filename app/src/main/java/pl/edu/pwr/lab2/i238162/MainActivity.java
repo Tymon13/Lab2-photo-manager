@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int MENU_SORT_BY_DATES_DESCENDING = R.id.sort_by_date_descending;
 
     private static final int fileRemoveUndoTimeout = 5000;
+    private boolean fabSubmenuVisible = false;
     private FileListAdapter adapter;
     private final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0,
                                                                                                               ItemTouchHelper.LEFT |
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        fabSubmenuVisible = false;
+        setSubmenuVisibility(View.GONE);
         startRecyclerView();
     }
 
@@ -141,8 +144,28 @@ public class MainActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-    public void onFabClick(View v) {
+    public void onAddItemFabClick(View v) {
+        if (fabSubmenuVisible) {
+            setSubmenuVisibility(View.GONE);
+        } else {
+            setSubmenuVisibility(View.VISIBLE);
+        }
+        fabSubmenuVisible = !fabSubmenuVisible;
+    }
+
+    public void onAddPhotoFabClick(View v) {
         Intent myIntent = new Intent(this, ImageCaptureActivity.class);
         startActivity(myIntent);
     }
+
+    public void onAddVideoFabClick(View v) {
+    }
+
+    private void setSubmenuVisibility(int visibility) {
+        View addPhoto = findViewById(R.id.addImageFab);
+        View addVideo = findViewById(R.id.addVideoFab);
+        addPhoto.setVisibility(visibility);
+        addVideo.setVisibility(visibility);
+    }
+
 }

@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Multimedia Manager</string>
-    <string name="add_image_fab_description">Add multimedia</string>
+    <string name="add_multimedia">Add multimedia</string>
+    <string name="add_photo">Add photo</string>
+    <string name="add_video">Add video</string>
     <string name="take_picture_fab_description">Take a picture</string>
     <string name="image_saved_text">Image saved as %1$s</string>
     <string name="image_save_fail_alert">Failed to save image!</string>

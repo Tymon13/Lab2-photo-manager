@@ -15,16 +15,44 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addImageFab"
+        android:id="@+id/addContentFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:clickable="true"
-        android:contentDescription="@string/add_image_fab_description"
-        android:onClick="onFabClick"
+        android:contentDescription="@string/add_multimedia"
+        android:onClick="onAddItemFabClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_baseline_add_24" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addImageFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:contentDescription="@string/add_photo"
+        android:onClick="onAddPhotoFabClick"
+        android:visibility="gone"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@+id/addContentFab"
+        app:layout_constraintEnd_toEndOf="@+id/addContentFab"
+        app:srcCompat="@drawable/ic_baseline_photo_camera_24" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addVideoFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:contentDescription="@string/add_video"
+        android:onClick="onAddVideoFabClick"
+        android:visibility="gone"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@+id/addImageFab"
+        app:layout_constraintEnd_toEndOf="@+id/addContentFab"
+        app:srcCompat="@drawable/ic_baseline_videocam_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
