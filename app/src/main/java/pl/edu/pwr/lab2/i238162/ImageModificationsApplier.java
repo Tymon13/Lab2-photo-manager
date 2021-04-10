@@ -4,35 +4,38 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.time.format.DateTimeFormatter;
 
 public class ImageModificationsApplier extends AppCompatActivity {
-    private String filePath;
+    private String tempFilePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_modifications_applier);
-        filePath = getIntent().getStringExtra("filePath");
+        tempFilePath = getIntent().getStringExtra("filePath");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         ImageView preview = findViewById(R.id.imagePreviewView);
-        preview.setImageBitmap(BitmapFactory.decodeFile(filePath));
+        preview.setImageBitmap(BitmapFactory.decodeFile(tempFilePath));
     }
 
     @Override
@@ -44,36 +47,63 @@ public class ImageModificationsApplier extends AppCompatActivity {
                 String croppedFilePath = result.getUri()
                                                .getPath();
                 try {
-                    FileInputStream fis = new FileInputStream(croppedFilePath);
-                    FileOutputStream fos = new FileOutputStream(filePath);
-                    FileChannel inChannel = fis.getChannel();
-                    FileChannel outChannel = fos.getChannel();
-                    inChannel.transferTo(0, inChannel.size(), outChannel);
-                    fis.close();
-                    fos.close();
-                    File croppedFileCache = new File(result.getUri()
-                                                           .getPath());
-                    croppedFileCache.deleteOnExit();
+                    Files.copy(new File(croppedFilePath).toPath(), new File(tempFilePath).toPath(),
+                               StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
-                    Toast.makeText(this, "Failed to save cropped image", Toast.LENGTH_LONG)
+                    Toast.makeText(this, getString(R.string.image_save_fail_message), Toast.LENGTH_LONG)
                          .show();
                     e.printStackTrace();
                 }
+                File croppedFileCache = new File(result.getUri()
+                                                       .getPath());
+                croppedFileCache.deleteOnExit();
             }
         }
     }
 
     public void onCropButtonClick(View v) {
-        File f = new File(filePath);
+        File f = new File(tempFilePath);
         Uri uri = Uri.fromFile(f);
         CropImage.activity(uri)
                  .start(this);
     }
 
     public void onSaveButtonClick(View v) {
-        String filename = filePath.substring(filePath.lastIndexOf(File.separatorChar) + 1);
-        Toast.makeText(this, getString(R.string.image_saved_text, filename), Toast.LENGTH_SHORT)
+        EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        DateTimeFormatter timeStampPattern = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String timestamp = timeStampPattern.format(java.time.LocalDateTime.now());
+        String defaultFilename = getString(R.string.filename_photo_prompt_default, timestamp);
+        input.setText(defaultFilename);
+
+        new AlertDialog.Builder(this).setTitle(R.string.filename_prompt_title)
+                                     .setView(input)
+                                     .setPositiveButton(R.string.save_button_text, (dialog, which) -> {
+                                         saveFile(input.getText()
+                                                       .toString() + getString(R.string.filename_photo_extension));
+                                         finish();
+                                     })
+                                     .setNegativeButton(R.string.cancel_button, null)
+                                     .setOnDismissListener(dialog -> {
+                                         File tempFile = new File(tempFilePath);
+                                         tempFile.deleteOnExit();
+                                     })
+                                     .show();
+    }
+
+    private void saveFile(String filename) {
+        File baseDirectory = new File(getFilesDir(), getString(R.string.photos_directory));
+        File outputFile = new File(baseDirectory, filename);
+        try {
+            Files.copy(new File(tempFilePath).toPath(), outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            Toast.makeText(this, getString(R.string.image_save_fail_message), Toast.LENGTH_LONG)
+                 .show();
+            e.printStackTrace();
+        }
+
+        Toast.makeText(ImageModificationsApplier.this, getString(R.string.image_saved_text, filename),
+                       Toast.LENGTH_SHORT)
              .show();
-        finish();
     }
 }

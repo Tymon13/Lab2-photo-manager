@@ -3,15 +3,12 @@
     <string name="add_image_fab_description">Add multimedia</string>
     <string name="take_picture_fab_description">Take a picture</string>
     <string name="image_saved_text">Image saved as %1$s</string>
-    <string name="alert_button_ok">OK</string>
     <string name="image_save_fail_alert">Failed to save image!</string>
-    <string name="image_filename">IMG_%1$s.jpg</string>
     <string name="camera_permission_needed_dialog">Camera permissions are required for adding new photos/videos</string>
     <string name="file_row_image_desciption">Media preview</string>
     <string name="resource_type_icon_description">Multimedia type</string>
     <string name="favourite_icon_description">Favourite</string>
     <string name="remove_file_notification">%1$s removed.</string>
-    <string name="undo_button">UNDO</string>
     <string name="favourites_removed">Removed from favourites</string>
     <string name="favourites_added">Added to favourites</string>
 
@@ -26,5 +23,15 @@
     <string name="crop_button_text">Crop</string>
     <string name="black_white_button_text">B/W</string>
     <string name="sepia_button_text">Sepia</string>
+
+    <string name="filename_prompt_title">Save file</string>
+    <string name="filename_prompt_message">Filename</string>
+    <string name="filename_photo_prompt_default">IMG_%1$s</string>
+    <string name="filename_photo_extension">.jpg</string>
+
+    <string name="alert_button_ok">OK</string>
     <string name="save_button_text">Save</string>
+    <string name="undo_button">UNDO</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="image_save_fail_message">Failed to save image!</string>
 </resources>

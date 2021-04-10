@@ -62,11 +62,7 @@ public class ImageCaptureActivity extends AppCompatActivity {
     }
 
     public void onTakePictureFabClick(View v) {
-        DateTimeFormatter timeStampPattern = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        String timestamp = timeStampPattern.format(java.time.LocalDateTime.now());
-        String filename = getString(R.string.image_filename, timestamp);
-        File baseDirectory = new File(getFilesDir(), getString(R.string.photos_directory));
-        File outputFile = new File(baseDirectory, filename);
+        File outputFile = new File(getCacheDir(), "temp.jpg");
         ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions.Builder(
                 outputFile).build();
         Executor cameraExecutor = Executors.newSingleThreadExecutor();
