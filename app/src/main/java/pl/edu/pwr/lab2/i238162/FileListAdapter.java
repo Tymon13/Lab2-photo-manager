@@ -29,24 +29,26 @@ import java.util.HashMap;
 import java.util.List;
 
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHolder> {
-    private final ArrayList<File> fileList;
+    private final ArrayList<File> fileList = new ArrayList<>();
     private final Handler handler = new Handler();
     private final HashMap<String, Runnable> pendingFileRemoves = new HashMap<>();
     private final Context parentContext;
     private final File favouritesFile;
     private final List<String> favourites;
+    private ArrayList<File> visibleFiles;
 
     public FileListAdapter(Context c, int sortMode) {
         parentContext = c;
         favouritesFile = new File(parentContext.getFilesDir(), "favourites.txt");
         favourites = readFavourites();
 
-        fileList = new ArrayList<>();
         File photosDir = new File(c.getFilesDir(), c.getString(R.string.photos_directory));
         File[] photos = photosDir.listFiles();
         if (photos != null) {
             Collections.addAll(fileList, photos);
         }
+
+        visibleFiles = (ArrayList<File>) fileList.clone(); // shallow copy is intended here
         sortItems(sortMode);
     }
 
@@ -101,18 +103,18 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     public void sortItems(int itemId) {
         switch (itemId) {
             case MainActivity.MENU_SORT_BY_NAMES_ASCENDING:
-                fileList.sort(Comparator.comparing(File::getName));
+                visibleFiles.sort(Comparator.comparing(File::getName));
                 break;
             case MainActivity.MENU_SORT_BY_NAMES_DESCENDING:
-                fileList.sort(Comparator.comparing(File::getName)
-                                        .reversed());
+                visibleFiles.sort(Comparator.comparing(File::getName)
+                                            .reversed());
                 break;
             case MainActivity.MENU_SORT_BY_DATES_ASCENDING:
-                fileList.sort(Comparator.comparing(FileListAdapter::getCreationDate));
+                visibleFiles.sort(Comparator.comparing(FileListAdapter::getCreationDate));
                 break;
             case MainActivity.MENU_SORT_BY_DATES_DESCENDING:
-                fileList.sort(Comparator.comparing(FileListAdapter::getCreationDate)
-                                        .reversed());
+                visibleFiles.sort(Comparator.comparing(FileListAdapter::getCreationDate)
+                                            .reversed());
                 break;
         }
         notifyDataSetChanged();
@@ -185,14 +187,14 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        String filename = fileList.get(position)
-                                  .getName();
-        String filePath = fileList.get(position)
-                                  .getPath();
+        String filename = visibleFiles.get(position)
+                                      .getName();
+        String filePath = visibleFiles.get(position)
+                                      .getPath();
         viewHolder.getFilenameView()
                   .setText(filename);
         viewHolder.getCreationDateView()
-                  .setText(getCreationDate(fileList.get(position)));
+                  .setText(getCreationDate(visibleFiles.get(position)));
 
         ImageView previewView = viewHolder.getPreviewView();
         int imageDimension = viewHolder.getPreviewViewDimension();
@@ -209,11 +211,12 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         viewHolder.getFavouriteButton()
                   .setOnClickListener(v -> toggleItemOnFavouritesList(viewHolder, filename));
 
-        viewHolder.getLayout().setOnClickListener(v -> {
-            Intent intent = new Intent(parentContext, PhotoDetails.class);
-            intent.putExtra("filePath", filePath);
-            parentContext.startActivity(intent);
-        });
+        viewHolder.getLayout()
+                  .setOnClickListener(v -> {
+                      Intent intent = new Intent(parentContext, PhotoDetails.class);
+                      intent.putExtra("filePath", filePath);
+                      parentContext.startActivity(intent);
+                  });
     }
 
     private void toggleItemOnFavouritesList(ViewHolder viewHolder, String filename) {
@@ -234,10 +237,19 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         }
     }
 
+    public void setFilter(String filenameFilter) {
+        visibleFiles = (ArrayList<File>) fileList.clone();
+        if (filenameFilter != null) {
+            visibleFiles.removeIf(file -> !file.getName()
+                                               .contains(filenameFilter));
+        }
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public int getItemCount() {
-        return fileList.size();
+        return visibleFiles.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

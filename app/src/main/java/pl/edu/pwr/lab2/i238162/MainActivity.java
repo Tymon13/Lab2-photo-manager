@@ -10,7 +10,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -57,22 +56,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createMediaDirectories();
-        setupSearchAction();
-    }
-
-    private void setupSearchAction() {
-        SearchView searchView = findViewById(R.id.app_bar_search);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
     }
 
     private void createMediaDirectories() {
@@ -96,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
+        setupSearchAction(menu);
+
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         int mode = preferences.getInt(getString(R.string.sort_mode_preferences_key), MENU_SORT_BY_NAMES_ASCENDING);
         MenuItem itemToSelect = menu.findItem(mode);
@@ -105,7 +90,31 @@ public class MainActivity extends AppCompatActivity {
             //something went wrong, fix by resetting to default
             onOptionsItemSelected(menu.findItem(R.id.sort_names_ascending));
         }
+
         return true;
+    }
+
+    private void setupSearchAction(Menu menu) {
+        SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search)
+                                                 .getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.setFilter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(() -> {
+            adapter.setFilter(null);
+            return false;
+        });
     }
 
     @Override
