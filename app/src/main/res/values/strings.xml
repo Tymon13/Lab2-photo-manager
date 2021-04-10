@@ -34,4 +34,5 @@
     <string name="undo_button">UNDO</string>
     <string name="cancel_button">Cancel</string>
     <string name="image_save_fail_message">Failed to save image!</string>
+    <string name="search_button">Search</string>
 </resources>
