@@ -60,12 +60,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createMediaDirectories() {
-        File photosDirectory = new File(getFilesDir(), getString(R.string.photos_directory));
-        if (!photosDirectory.exists()) {
-            if (photosDirectory.mkdirs()) {
-                Log.i(this.getLocalClassName(), "Created " + photosDirectory + " directory.");
+        createDir(new File(getFilesDir(), getString(R.string.photos_directory)));
+        createDir(new File(getFilesDir(), getString(R.string.videos_directory)));
+    }
+
+    private void createDir(File directory) {
+        if (!directory.exists()) {
+            if (directory.mkdirs()) {
+                Log.i(this.getLocalClassName(), "Created " + directory + " directory.");
             } else {
-                Log.e(this.getLocalClassName(), "Failed to create " + photosDirectory);
+                Log.e(this.getLocalClassName(), "Failed to create " + directory);
             }
         }
     }
@@ -159,6 +163,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onAddVideoFabClick(View v) {
+        Intent myIntent = new Intent(this, VideoRecordActivity.class);
+        startActivity(myIntent);
     }
 
     private void setSubmenuVisibility(int visibility) {

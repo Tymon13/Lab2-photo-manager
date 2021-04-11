@@ -7,7 +7,8 @@
     <string name="image_saved_text">Image saved as %1$s</string>
     <string name="image_save_fail_alert">Failed to save image!</string>
     <string name="camera_permission_needed_dialog">Camera permissions are required for adding new photos/videos</string>
-    <string name="file_row_image_desciption">Media preview</string>
+    <string name="audio_permission_needed_dialog">Record audio permissions are required for adding new videos</string>
+    <string name="file_row_image_description">Media preview</string>
     <string name="resource_type_icon_description">Multimedia type</string>
     <string name="favourite_icon_description">Favourite</string>
     <string name="remove_file_notification">%1$s removed.</string>
@@ -15,6 +16,7 @@
     <string name="favourites_added">Added to favourites</string>
 
     <string name="photos_directory">Photos</string>
+    <string name="videos_directory">Videos</string>
 
     <string name="sort_by_names_ascending_text">Sort by names ascending</string>
     <string name="sort_by_names_descending_text">Sort by names descending</string>
