@@ -14,7 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MultimediaManager">
-        <activity android:name=".VideoDetails"></activity>
+        <activity
+            android:name=".VideoDetails"
+            android:theme="@style/Theme.MultimediaManager.Fullscreen" />
         <activity android:name=".VideoPreviewBeforeSave" />
         <activity
             android:name=".PhotoDetails"
