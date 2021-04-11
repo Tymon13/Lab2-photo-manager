@@ -2,9 +2,11 @@ package pl.edu.pwr.lab2.i238162;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,7 +33,8 @@ public class VideoRecordActivity extends CameraPreviewActivity {
         recordButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_circle_24));
         recordButton.setOnClickListener(v -> recordFabAction());
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) !=
+                PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, RECORD_AUDIO_PERMISSION_CODE);
         }
     }
@@ -51,32 +54,44 @@ public class VideoRecordActivity extends CameraPreviewActivity {
         }
     }
 
-    @SuppressLint("RestrictedApi") // Video capture is not officially supported, but it works, so...
     private void recordFabAction() {
         if (isRecording) {
             recordButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_circle_24));
             videoCapture.stopRecording();
         } else {
             recordButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_stop_24));
-
-            File cacheOutput = new File(getCacheDir(), "temp.mp4");
-            VideoCapture.OutputFileOptions options = new VideoCapture.OutputFileOptions.Builder(cacheOutput).build();
-            videoCapture.startRecording(options, ContextCompat.getMainExecutor(this),
-                                        new VideoCapture.OnVideoSavedCallback() {
-                                            @Override
-                                            public void onVideoSaved(
-                                                    @NonNull VideoCapture.OutputFileResults outputFileResults) {
-                                                Log.i("VideoRecord", "Video recorded successfully");
-                                            }
-
-                                            @Override
-                                            public void onError(int videoCaptureError, @NonNull String message,
-                                                                @Nullable Throwable cause) {
-                                                Log.e("VideoRecord", "Video record failed: " + message);
-                                            }
-                                        });
+            startRecording();
         }
         isRecording = !isRecording;
+    }
+
+    @SuppressLint("RestrictedApi") // Video capture is not officially supported, but it works, so...
+    private void startRecording() {
+        File cacheOutput = new File(getCacheDir(), "temp.mp4");
+        VideoCapture.OutputFileOptions options = new VideoCapture.OutputFileOptions.Builder(cacheOutput).build();
+        videoCapture.startRecording(options, ContextCompat.getMainExecutor(this),
+                                    new VideoCapture.OnVideoSavedCallback() {
+                                        @Override
+                                        public void onVideoSaved(
+                                                @NonNull VideoCapture.OutputFileResults outputFileResults) {
+                                            Log.i("VideoRecord", "Video recorded successfully");
+                                            Intent intent = new Intent(VideoRecordActivity.this,
+                                                                       VideoPreviewBeforeSave.class);
+                                            intent.putExtra("filePath", cacheOutput.getPath());
+                                            startActivity(intent);
+
+                                            VideoRecordActivity.this.finish();
+                                        }
+
+                                        @Override
+                                        public void onError(int videoCaptureError, @NonNull String message,
+                                                            @Nullable Throwable cause) {
+                                            Toast.makeText(VideoRecordActivity.this, "Failed to record a video",
+                                                           Toast.LENGTH_LONG)
+                                                 .show();
+                                            Log.e("VideoRecord", "Video record failed: " + message);
+                                        }
+                                    });
     }
 
     @Override
