@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.media.ThumbnailUtils;
 import android.os.Handler;
 import android.util.Log;
+import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +30,21 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+enum FileType {
+    Photo, Video;
+
+    static FileType getType(String filename) {
+        String extension = filename.substring(filename.lastIndexOf('.') + 1);
+        if (extension.equals("jpg")) {
+            return Photo;
+        } else if (extension.equals("mp4")) {
+            return Video;
+        } else {
+            return null;
+        }
+    }
+}
+
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHolder> {
     private final ArrayList<File> fileList = new ArrayList<>();
     private final Handler handler = new Handler();
@@ -42,14 +59,19 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         favouritesFile = new File(parentContext.getFilesDir(), "favourites.txt");
         favourites = readFavourites();
 
-        File photosDir = new File(c.getFilesDir(), c.getString(R.string.photos_directory));
-        File[] photos = photosDir.listFiles();
-        if (photos != null) {
-            Collections.addAll(fileList, photos);
-        }
+        findFilesFromDirectory(c, R.string.photos_directory);
+        findFilesFromDirectory(c, R.string.videos_directory);
 
         visibleFiles = (ArrayList<File>) fileList.clone(); // shallow copy is intended here
         sortItems(sortMode);
+    }
+
+    private void findFilesFromDirectory(Context c, int directoryResourceId) {
+        File dir = new File(c.getFilesDir(), c.getString(directoryResourceId));
+        File[] items = dir.listFiles();
+        if (items != null) {
+            Collections.addAll(fileList, items);
+        }
     }
 
     private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -198,7 +220,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
         ImageView previewView = viewHolder.getPreviewView();
         int imageDimension = viewHolder.getPreviewViewDimension();
-        previewView.setImageBitmap(decodeSampledBitmapFromResource(filePath, imageDimension, imageDimension));
+        previewView.setImageBitmap(getPreviewBitmap(filePath, imageDimension));
 
         Drawable icon;
         if (favourites.contains(filename)) {
@@ -211,12 +233,59 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         viewHolder.getFavouriteButton()
                   .setOnClickListener(v -> toggleItemOnFavouritesList(viewHolder, filename));
 
+        viewHolder.getMultimediaType().setImageDrawable(getMultimediaType(filename));
+
         viewHolder.getLayout()
                   .setOnClickListener(v -> {
-                      Intent intent = new Intent(parentContext, PhotoDetails.class);
-                      intent.putExtra("filePath", filePath);
-                      parentContext.startActivity(intent);
+                      Class<?> activity = getDetailsActivity(filename);
+                      if (activity != null) {
+                          Intent intent = new Intent(parentContext, activity);
+                          intent.putExtra("filePath", filePath);
+                          parentContext.startActivity(intent);
+                      }
                   });
+    }
+
+    private Drawable getMultimediaType(String filename) {
+        FileType type = FileType.getType(filename);
+        if (type == FileType.Photo) {
+            return ContextCompat.getDrawable(parentContext, R.drawable.ic_baseline_photo_24);
+        } else if (type == FileType.Video) {
+            return ContextCompat.getDrawable(parentContext, R.drawable.ic_baseline_videocam_24);
+        }
+        return ContextCompat.getDrawable(parentContext, R.drawable.ic_baseline_not_interested_24);
+    }
+
+    private Bitmap getPreviewBitmap(String filePath, int imageDimension) {
+        FileType type = FileType.getType(filePath);
+        if (type == FileType.Photo) {
+            return decodeSampledBitmapFromResource(filePath, imageDimension, imageDimension);
+        } else if (type == FileType.Video) {
+            try {
+                return ThumbnailUtils.createVideoThumbnail(new File(filePath), new Size(imageDimension, imageDimension),
+                                                           null);
+            } catch (IOException e) {
+                e.printStackTrace();
+                // drop to default case
+            }
+        }
+        return BitmapFactory.decodeResource(parentContext.getResources(),
+                                            R.drawable.ic_baseline_image_not_supported_24);
+    }
+
+    private Class<?> getDetailsActivity(String filename) {
+        FileType type = FileType.getType(filename);
+        if (type == null) {
+            return null;
+        }
+        switch (type) {
+            case Photo:
+                return PhotoDetails.class;
+            case Video:
+                return VideoDetails.class;
+            default:
+                return null;
+        }
     }
 
     private void toggleItemOnFavouritesList(ViewHolder viewHolder, String filename) {
@@ -258,6 +327,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         private final TextView filenameView;
         private final TextView creationDateView;
         private final ImageView favouriteButton;
+        private final ImageView multimediaType;
         private final View layout;
 
         public ViewHolder(View view) {
@@ -269,6 +339,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
                                          .getDimension(R.dimen.file_list_image_preview_size);
             creationDateView = view.findViewById(R.id.creationDateView);
             favouriteButton = view.findViewById(R.id.favouriteIconView);
+            multimediaType = view.findViewById(R.id.multimediaTypeIconView);
             layout = view;
         }
 
@@ -294,6 +365,10 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
         public View getLayout() {
             return layout;
+        }
+
+        public ImageView getMultimediaType() {
+            return multimediaType;
         }
     }
 
