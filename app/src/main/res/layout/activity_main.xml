@@ -39,7 +39,8 @@
         app:fabSize="mini"
         app:layout_constraintBottom_toTopOf="@+id/addContentFab"
         app:layout_constraintEnd_toEndOf="@+id/addContentFab"
-        app:srcCompat="@drawable/ic_baseline_photo_camera_24" />
+        app:srcCompat="@drawable/ic_baseline_photo_camera_24"
+        tools:visibility="visible" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addVideoFab"
@@ -53,6 +54,22 @@
         app:fabSize="mini"
         app:layout_constraintBottom_toTopOf="@+id/addImageFab"
         app:layout_constraintEnd_toEndOf="@+id/addContentFab"
-        app:srcCompat="@drawable/ic_baseline_videocam_24" />
+        app:srcCompat="@drawable/ic_baseline_videocam_24"
+        tools:visibility="visible" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addAudioFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:contentDescription="@string/add_video"
+        android:onClick="onAddAudioFabClick"
+        android:visibility="gone"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@+id/addVideoFab"
+        app:layout_constraintEnd_toEndOf="@+id/addContentFab"
+        app:srcCompat="@drawable/ic_baseline_mic_24"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

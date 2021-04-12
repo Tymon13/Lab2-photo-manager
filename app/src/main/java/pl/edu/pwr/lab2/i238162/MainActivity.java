@@ -167,11 +167,17 @@ public class MainActivity extends AppCompatActivity {
         startActivity(myIntent);
     }
 
+    public void onAddAudioFabClick(View w) {
+
+    }
+
     private void setSubmenuVisibility(int visibility) {
         View addPhoto = findViewById(R.id.addImageFab);
         View addVideo = findViewById(R.id.addVideoFab);
+        View addAudio = findViewById(R.id.addAudioFab);
         addPhoto.setVisibility(visibility);
         addVideo.setVisibility(visibility);
+        addAudio.setVisibility(visibility);
     }
 
 }
