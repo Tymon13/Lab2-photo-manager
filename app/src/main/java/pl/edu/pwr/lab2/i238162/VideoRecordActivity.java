@@ -45,7 +45,7 @@ public class VideoRecordActivity extends CameraPreviewActivity {
         if (requestCode == RECORD_AUDIO_PERMISSION_CODE) {
             if (grantResults.length <= 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(R.string.audio_permission_needed_dialog)
+                builder.setMessage(R.string.audio_permission_for_videos_dialog)
                        .setPositiveButton(R.string.alert_button_ok, null)
                        .setOnDismissListener(dialog -> VideoRecordActivity.this.finish());
                 builder.create()

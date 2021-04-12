@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private void createMediaDirectories() {
         createDir(new File(getFilesDir(), getString(R.string.photos_directory)));
         createDir(new File(getFilesDir(), getString(R.string.videos_directory)));
+        createDir(new File(getFilesDir(), getString(R.string.audio_directory)));
     }
 
     private void createDir(File directory) {

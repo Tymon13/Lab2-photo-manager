@@ -21,7 +21,14 @@ import java.nio.file.StandardCopyOption;
 import java.time.format.DateTimeFormatter;
 
 public class VideoPreviewBeforeSave extends AppCompatActivity {
-    SimpleExoPlayer player;
+    // probably not best way to solve this, but at least it's DRY
+    protected int saveDirectory = R.string.videos_directory;
+    protected int saveFailMessage = R.string.video_save_fail_message;
+    protected int savedText = R.string.video_saved_text;
+    protected int filenamePromptDefault = R.string.filename_video_prompt_default;
+    protected int filenameExtension = R.string.filename_video_extension;
+
+    private SimpleExoPlayer player;
     private String filePath;
 
     @Override
@@ -49,14 +56,14 @@ public class VideoPreviewBeforeSave extends AppCompatActivity {
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         DateTimeFormatter timeStampPattern = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         String timestamp = timeStampPattern.format(java.time.LocalDateTime.now());
-        String defaultFilename = getString(R.string.filename_video_prompt_default, timestamp);
+        String defaultFilename = getString(filenamePromptDefault, timestamp);
         input.setText(defaultFilename);
 
         new AlertDialog.Builder(this).setTitle(R.string.filename_prompt_title)
                                      .setView(input)
                                      .setPositiveButton(R.string.save_button_text, (dialog, which) -> {
                                          saveFile(input.getText()
-                                                       .toString() + getString(R.string.filename_video_extension));
+                                                       .toString() + getString(filenameExtension));
                                          finish();
                                      })
                                      .setNegativeButton(R.string.cancel_button, null)
@@ -68,17 +75,17 @@ public class VideoPreviewBeforeSave extends AppCompatActivity {
     }
 
     private void saveFile(String filename) {
-        File baseDirectory = new File(getFilesDir(), getString(R.string.videos_directory));
+        File baseDirectory = new File(getFilesDir(), getString(saveDirectory));
         File outputFile = new File(baseDirectory, filename);
         try {
             Files.copy(new File(filePath).toPath(), outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            Toast.makeText(this, getString(R.string.video_save_fail_message), Toast.LENGTH_LONG)
+            Toast.makeText(this, getString(saveFailMessage), Toast.LENGTH_LONG)
                  .show();
             e.printStackTrace();
         }
 
-        Toast.makeText(this, getString(R.string.image_saved_text, filename), Toast.LENGTH_SHORT)
+        Toast.makeText(this, getString(savedText, filename), Toast.LENGTH_SHORT)
              .show();
     }
 }

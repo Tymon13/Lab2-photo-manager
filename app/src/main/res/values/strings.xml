@@ -4,21 +4,27 @@
     <string name="add_photo">Add photo</string>
     <string name="add_video">Add video</string>
     <string name="take_picture_fab_description">Take a picture</string>
-    <string name="image_saved_text">Image saved as %1$s</string>
     <string name="image_save_fail_alert">Failed to save image!</string>
     <string name="camera_permission_needed_dialog">Camera permissions are required for adding new photos/videos</string>
-    <string name="audio_permission_needed_dialog">Record audio permissions are required for adding new videos</string>
+    <string name="audio_permission_for_videos_dialog">Record audio permissions are required for adding new videos</string>
+    <string name="audio_permission_for_audio_dialog">Record audio permissions are required for adding new audio messages</string>
     <string name="file_row_image_description">Media preview</string>
     <string name="resource_type_icon_description">Multimedia type</string>
     <string name="favourite_icon_description">Favourite</string>
     <string name="remove_file_notification">%1$s removed.</string>
     <string name="favourites_removed">Removed from favourites</string>
     <string name="favourites_added">Added to favourites</string>
+
+    <string name="image_saved_text">Image saved as %1$s</string>
+    <string name="video_saved_text">Video saved as %1$s</string>
+    <string name="audio_saved_text">Audio message saved as %1$s</string>
     <string name="image_save_fail_message">Failed to save image!</string>
     <string name="video_save_fail_message">Failed to save video!</string>
+    <string name="audio_save_fail_message">Failed to save audio message!</string>
 
     <string name="photos_directory">Photos</string>
     <string name="videos_directory">Videos</string>
+    <string name="audio_directory">Audio</string>
 
     <string name="sort_by_names_ascending_text">Sort by names ascending</string>
     <string name="sort_by_names_descending_text">Sort by names descending</string>
@@ -34,8 +40,10 @@
     <string name="filename_prompt_message">Filename</string>
     <string name="filename_photo_prompt_default">IMG_%1$s</string>
     <string name="filename_video_prompt_default">VID_%1$s</string>
+    <string name="filename_audio_prompt_default">AUD_%1$s</string>
     <string name="filename_photo_extension">.jpg</string>
     <string name="filename_video_extension">.mp4</string>
+    <string name="filename_audio_extension">.3gp</string>
 
     <string name="alert_button_ok">OK</string>
     <string name="save_button_text">Save</string>

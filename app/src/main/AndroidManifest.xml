@@ -21,6 +21,7 @@
             android:name=".VideoDetails"
             android:theme="@style/Theme.MultimediaManager.Fullscreen" />
         <activity android:name=".VideoPreviewBeforeSave" />
+        <activity android:name=".AudioPreviewBeforeSave" />
         <activity
             android:name=".PhotoDetails"
             android:theme="@style/Theme.MultimediaManager.Fullscreen" />

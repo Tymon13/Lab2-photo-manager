@@ -31,17 +31,18 @@ import java.util.HashMap;
 import java.util.List;
 
 enum FileType {
-    Photo, Video;
+    Photo, Video, Audio;
 
-    static FileType getType(String filename) {
-        String extension = filename.substring(filename.lastIndexOf('.') + 1);
-        if (extension.equals("jpg")) {
+    static FileType getType(String filename, Context c) {
+        String extension = filename.substring(filename.lastIndexOf('.'));
+        if (extension.equals(c.getString(R.string.filename_photo_extension))) {
             return Photo;
-        } else if (extension.equals("mp4")) {
+        } else if (extension.equals(c.getString(R.string.filename_video_extension))) {
             return Video;
-        } else {
-            return null;
+        } else if (extension.equals(c.getString(R.string.filename_audio_extension))) {
+            return Audio;
         }
+        return null;
     }
 }
 
@@ -61,17 +62,10 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
 
         findFilesFromDirectory(c, R.string.photos_directory);
         findFilesFromDirectory(c, R.string.videos_directory);
+        findFilesFromDirectory(c, R.string.audio_directory);
 
         visibleFiles = (ArrayList<File>) fileList.clone(); // shallow copy is intended here
         sortItems(sortMode);
-    }
-
-    private void findFilesFromDirectory(Context c, int directoryResourceId) {
-        File dir = new File(c.getFilesDir(), c.getString(directoryResourceId));
-        File[] items = dir.listFiles();
-        if (items != null) {
-            Collections.addAll(fileList, items);
-        }
     }
 
     private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -119,6 +113,14 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
             return creationDate.substring(0, creationDate.length() - 1);
         } catch (Exception e) {
             return "?";
+        }
+    }
+
+    private void findFilesFromDirectory(Context c, int directoryResourceId) {
+        File dir = new File(c.getFilesDir(), c.getString(directoryResourceId));
+        File[] items = dir.listFiles();
+        if (items != null) {
+            Collections.addAll(fileList, items);
         }
     }
 
@@ -233,7 +235,8 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
         viewHolder.getFavouriteButton()
                   .setOnClickListener(v -> toggleItemOnFavouritesList(viewHolder, filename));
 
-        viewHolder.getMultimediaType().setImageDrawable(getMultimediaType(filename));
+        viewHolder.getMultimediaType()
+                  .setImageDrawable(getMultimediaType(filename));
 
         viewHolder.getLayout()
                   .setOnClickListener(v -> {
@@ -247,17 +250,19 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
     }
 
     private Drawable getMultimediaType(String filename) {
-        FileType type = FileType.getType(filename);
+        FileType type = FileType.getType(filename, parentContext);
         if (type == FileType.Photo) {
             return ContextCompat.getDrawable(parentContext, R.drawable.ic_baseline_photo_24);
         } else if (type == FileType.Video) {
             return ContextCompat.getDrawable(parentContext, R.drawable.ic_baseline_videocam_24);
+        } else if (type == FileType.Audio) {
+            return ContextCompat.getDrawable(parentContext, R.drawable.ic_baseline_mic_24);
         }
         return ContextCompat.getDrawable(parentContext, R.drawable.ic_baseline_not_interested_24);
     }
 
     private Bitmap getPreviewBitmap(String filePath, int imageDimension) {
-        FileType type = FileType.getType(filePath);
+        FileType type = FileType.getType(filePath, parentContext);
         if (type == FileType.Photo) {
             return decodeSampledBitmapFromResource(filePath, imageDimension, imageDimension);
         } else if (type == FileType.Video) {
@@ -268,13 +273,15 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
                 e.printStackTrace();
                 // drop to default case
             }
+        } else if (type == FileType.Audio) {
+            return BitmapFactory.decodeResource(parentContext.getResources(), R.drawable.ic_baseline_mic_24);
         }
         return BitmapFactory.decodeResource(parentContext.getResources(),
                                             R.drawable.ic_baseline_image_not_supported_24);
     }
 
     private Class<?> getDetailsActivity(String filename) {
-        FileType type = FileType.getType(filename);
+        FileType type = FileType.getType(filename, parentContext);
         if (type == null) {
             return null;
         }
@@ -282,6 +289,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.ViewHo
             case Photo:
                 return PhotoDetails.class;
             case Video:
+            case Audio:
                 return VideoDetails.class;
             default:
                 return null;
