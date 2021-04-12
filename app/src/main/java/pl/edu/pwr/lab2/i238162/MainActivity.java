@@ -168,7 +168,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onAddAudioFabClick(View w) {
-
+        Intent myIntent = new Intent(this, AudioRecordActivity.class);
+        startActivity(myIntent);
     }
 
     private void setSubmenuVisibility(int visibility) {

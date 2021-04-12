@@ -15,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MultimediaManager">
         <activity
+            android:name=".AudioRecordActivity"
+            android:theme="@style/Theme.MultimediaManager.Fullscreen" />
+        <activity
             android:name=".VideoDetails"
             android:theme="@style/Theme.MultimediaManager.Fullscreen" />
         <activity android:name=".VideoPreviewBeforeSave" />
